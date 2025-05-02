@@ -1,7 +1,11 @@
+import { NavLink } from "react-router";
+
 export const Footer = () => {
   return (
     <footer className="container mx-auto flex justify-between py-4">
-      <p>Time To Wish</p>
+      <NavLink to="/" className="cursor-pointer">
+        Time To Wish
+      </NavLink>
       <p>© 2025 Time To Wish</p>
     </footer>
   );

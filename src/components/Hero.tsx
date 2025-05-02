@@ -1,3 +1,5 @@
+import { NavLink } from "react-router";
+
 export const Hero = () => {
   return (
     <section className="container mx-auto flex min-h-[calc(100vh-112px)] flex-col items-center justify-center gap-8">
@@ -9,12 +11,18 @@ export const Hero = () => {
         </p>
       </div>
       <div className="flex gap-4">
-        <button className="cursor-pointer rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200">
+        <NavLink
+          to="/sign-in"
+          className="cursor-pointer rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
+        >
           Sign In
-        </button>
-        <button className="cursor-pointer rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200">
+        </NavLink>
+        <NavLink
+          to="/sign-up"
+          className="cursor-pointer rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
+        >
           Sign Up
-        </button>
+        </NavLink>
       </div>
     </section>
   );
