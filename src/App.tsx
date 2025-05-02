@@ -1,12 +1,15 @@
-import './App.css'
+import { Nav } from "./components/Nav";
+import { Footer } from "./components/Footer";
+import { Hero } from "./components/Hero";
 
 function App() {
-
-  return ( 
-    <>
-      <h1 className="text-3xl font-bold underline">Birthdays</h1>
-    </>
-  )
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <Nav />
+      <Hero />
+      <Footer />
+    </div>
+  );
 }
 
-export default App
+export default App;
