@@ -3,10 +3,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
   updateProfile,
   sendEmailVerification,
   sendPasswordResetEmail,
+  applyActionCode,
 } from "firebase/auth";
 
 export const createFirebaseUser = async (
@@ -54,21 +54,19 @@ export const signOutFirebaseUser = async () => {
   }
 };
 
-export const getCurrentUser = () => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log(user);
-      return user;
-    } else {
-      console.log("No user");
-      return null;
-    }
-  });
-};
-
 export const resetPasswordEmail = async (email: string) => {
   try {
     await sendPasswordResetEmail(auth, email);
+    return true;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const verifyEmail = async (oobCode: string) => {
+  try {
+    await applyActionCode(auth, oobCode);
     return true;
   } catch (error) {
     console.log(error);
