@@ -1,4 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
+import { createFirebaseUser } from "../../hooks/useAuth";
 
 type Inputs = {
   name: string;
@@ -13,7 +14,13 @@ export const SignUpForm = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const user = await createFirebaseUser(data.name, data.email, data.password);
+    if (!user) {
+      throw new Error("User not created");
+    }
+    console.log(user);
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <input
