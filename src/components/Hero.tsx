@@ -2,7 +2,7 @@ import { NavLink } from "react-router";
 
 export const Hero = () => {
   return (
-    <section className="container mx-auto flex min-h-[calc(100vh-112px)] flex-col items-center justify-center gap-8">
+    <section className="container mx-auto flex min-h-[calc(100vh-120px)] flex-col items-center justify-center gap-8">
       <div className="space-y-4 text-center">
         <h1 className="text-4xl">Welcome to the Time To Wish</h1>
         <p className="text-xl">
