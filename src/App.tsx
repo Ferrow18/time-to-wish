@@ -1,11 +1,11 @@
-import { Nav } from "./components/Nav";
-import { Footer } from "./components/Footer";
+import { Nav } from "./components/nav";
+import { Footer } from "./components/footer";
 import { Routes, Route } from "react-router";
-import { Home } from "./pages/Home";
-import { SignIn } from "./pages/SignIn";
-import { SignUp } from "./pages/SignUp";
-import { AuthAction } from "./pages/AuthAction";
-import { Dashboard } from "./pages/Dashboard";
+import { Home } from "./pages/home";
+import { SignIn } from "./pages/sign-in";
+import { SignUp } from "./pages/sign-up";
+import { AuthAction } from "./pages/auth-action";
+import { Dashboard } from "./pages/dashboard";
 
 function App() {
   return (
