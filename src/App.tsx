@@ -6,6 +6,7 @@ import { SignIn } from "./pages/sign-in";
 import { SignUp } from "./pages/sign-up";
 import { AuthAction } from "./pages/auth-action";
 import { Dashboard } from "./pages/dashboard";
+import { PrivateRoute } from "./components/routes/private-route";
 
 function App() {
   return (
@@ -16,7 +17,14 @@ function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/auth/action" element={<AuthAction />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
       </Routes>
       <Footer />
     </div>
