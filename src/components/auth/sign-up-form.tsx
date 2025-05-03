@@ -83,14 +83,9 @@ export function SignUpForm({
                 />
               </div>
               {error && <span className="text-red-500">{error}</span>}
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Sign Up
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Sign Up with Google
-                </Button>
-              </div>
+              <Button type="submit" className="w-full">
+                Sign Up
+              </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}

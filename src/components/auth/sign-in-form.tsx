@@ -78,14 +78,9 @@ export function LoginForm({
                 />
               </div>
               {error && <span className="text-red-500">{error}</span>}
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
-                </Button>
-              </div>
+              <Button type="submit" className="w-full">
+                Login
+              </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
