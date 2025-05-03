@@ -10,7 +10,6 @@ import {
 import { useContext } from "react";
 import { UserContext } from "../context/contexts";
 import { Link } from "react-router";
-import { Button } from "./ui/button";
 import { signOutFirebaseUser } from "@/hooks/useAuth";
 
 export const UserInfo = () => {
@@ -30,11 +29,16 @@ export const UserInfo = () => {
           <p className="text-xs text-muted-foreground">{user?.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link to="/dashboard">Dashboard</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Button onClick={() => signOutFirebaseUser()}>Sign out</Button>
+        <Link to="/dashboard">
+          <DropdownMenuItem className="cursor-pointer">
+            Dashboard
+          </DropdownMenuItem>
+        </Link>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => signOutFirebaseUser()}
+        >
+          Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
