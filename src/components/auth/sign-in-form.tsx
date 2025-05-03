@@ -78,7 +78,7 @@ export function LoginForm({
                 />
               </div>
               {error && <span className="text-red-500">{error}</span>}
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full cursor-pointer">
                 Login
               </Button>
             </div>
