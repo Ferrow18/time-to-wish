@@ -7,6 +7,18 @@ const birthdays = [
     date: new Date("2025-02-12"),
   },
   {
+    name: "Alfred",
+    date: new Date("2025-02-14"),
+  },
+  {
+    name: "Mia",
+    date: new Date("2025-02-20"),
+  },
+  {
+    name: "Ellie",
+    date: new Date("2025-02-26"),
+  },
+  {
     name: "John Doe",
     date: new Date("2025-05-01"),
   },
