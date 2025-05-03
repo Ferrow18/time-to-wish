@@ -1,54 +1,101 @@
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 import { useForm, SubmitHandler } from "react-hook-form";
 import { signInFirebaseUser } from "../../hooks/useAuth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useState } from "react";
+import { getFirebaseAuthErrorMessage } from "@/lib/firebase-errors";
 
 type Inputs = {
   email: string;
   password: string;
 };
 
-export const SignInForm = () => {
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const user = await signInFirebaseUser(data.email, data.password);
-    if (!user) {
-      throw new Error("User not created");
+    try {
+      await signInFirebaseUser(data.email, data.password);
+      navigate("/dashboard");
+    } catch (error) {
+      const errorMessage = getFirebaseAuthErrorMessage(error);
+      setError(errorMessage);
     }
-    navigate("/dashboard");
-    console.log(user);
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <input
-        type="email"
-        placeholder="Email"
-        className="rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
-        {...register("email", { required: true })}
-      />
-      {errors.email && <span className="text-red-500">Email is required</span>}
-      <input
-        type="password"
-        placeholder="Password"
-        className="rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
-        {...register("password", { required: true, minLength: 6 })}
-      />
-      {errors.password && (
-        <span className="text-red-500">
-          Password is required and must be at least 6 characters long
-        </span>
-      )}
-      <button
-        type="submit"
-        className="cursor-pointer rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
-      >
-        Sign In
-      </button>
-    </form>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <Card>
+        <CardHeader>
+          <CardTitle>Login to your account</CardTitle>
+          <CardDescription>
+            Enter your email below to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-3">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  {...register("email", { required: true })}
+                />
+              </div>
+              <div className="grid gap-3">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                  <a
+                    href="#"
+                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                  >
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  {...register("password", { required: true, minLength: 6 })}
+                />
+              </div>
+              {error && <span className="text-red-500">{error}</span>}
+              <div className="flex flex-col gap-3">
+                <Button type="submit" className="w-full">
+                  Login
+                </Button>
+                <Button variant="outline" className="w-full">
+                  Login with Google
+                </Button>
+              </div>
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Don&apos;t have an account?{" "}
+              <Link to="/sign-up" className="underline underline-offset-4">
+                Sign up
+              </Link>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
-};
+}

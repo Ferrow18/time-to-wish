@@ -1,5 +1,20 @@
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 import { useForm, SubmitHandler } from "react-hook-form";
 import { createFirebaseUser } from "../../hooks/useAuth";
+import { Link, useNavigate } from "react-router";
+import { useState } from "react";
+import { getFirebaseAuthErrorMessage } from "@/lib/firebase-errors";
 
 type Inputs = {
   name: string;
@@ -7,65 +22,85 @@ type Inputs = {
   password: string;
 };
 
-export const SignUpForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitSuccessful },
-  } = useForm<Inputs>();
+export function SignUpForm({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const user = await createFirebaseUser(data.name, data.email, data.password);
-    if (!user) {
-      throw new Error("User not created");
+    try {
+      await createFirebaseUser(data.name, data.email, data.password);
+      navigate("/dashboard");
+    } catch (error) {
+      const errorMessage = getFirebaseAuthErrorMessage(error);
+      setError(errorMessage);
     }
-    console.log(user);
   };
   return (
-    <>
-      {isSubmitSuccessful ? (
-        <p className="text-center">
-          Thank you for signing up! Verify your email to get started.
-        </p>
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Name"
-            className="rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
-            {...register("name", { required: true })}
-          />
-          {errors.name && (
-            <span className="text-red-500">Name is required</span>
-          )}
-          <input
-            type="email"
-            placeholder="Email"
-            className="rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
-            {...register("email", { required: true })}
-          />
-          {errors.email && (
-            <span className="text-red-500">Email is required</span>
-          )}
-          <input
-            type="password"
-            placeholder="Password"
-            className="rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
-            {...register("password", { required: true, minLength: 6 })}
-          />
-          {errors.password && (
-            <span className="text-red-500">
-              Password is required and must be at least 6 characters long
-            </span>
-          )}
-          <button
-            type="submit"
-            className="cursor-pointer rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-amber-200"
-          >
-            Sign Up
-          </button>
-        </form>
-      )}
-    </>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <Card>
+        <CardHeader>
+          <CardTitle>Sign up to your account</CardTitle>
+          <CardDescription>
+            Enter your email below to sign up to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-3">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John"
+                  required
+                  {...register("name", { required: true })}
+                />
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  {...register("email", { required: true })}
+                />
+              </div>
+              <div className="grid gap-3">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  {...register("password", { required: true, minLength: 6 })}
+                />
+              </div>
+              {error && <span className="text-red-500">{error}</span>}
+              <div className="flex flex-col gap-3">
+                <Button type="submit" className="w-full">
+                  Sign Up
+                </Button>
+                <Button variant="outline" className="w-full">
+                  Sign Up with Google
+                </Button>
+              </div>
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Already have an account?{" "}
+              <Link to="/sign-in" className="underline underline-offset-4">
+                Sign in
+              </Link>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
-};
+}
