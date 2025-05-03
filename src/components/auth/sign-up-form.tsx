@@ -28,7 +28,11 @@ export function SignUpForm({
 }: React.ComponentProps<"div">) {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm<Inputs>();
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
@@ -83,8 +87,12 @@ export function SignUpForm({
                 />
               </div>
               {error && <span className="text-red-500">{error}</span>}
-              <Button type="submit" className="w-full cursor-pointer">
-                Sign Up
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Signing up..." : "Sign Up"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
