@@ -28,14 +28,16 @@ const birthdays = [
   },
   {
     name: "Matt",
-    date: new Date("2025-05-05"),
+    date: new Date("1988-05-05"),
   },
 ];
 
 export const Dashboard = () => {
-  const birthdayDates = birthdays.map((birthday) => birthday.date);
-  const [date] = useState<Date[] | undefined>(birthdayDates);
   const [hoveredDay, setHoveredDay] = useState<Date | null>(null);
+
+  const now = new Date();
+  const oneMonthLater = new Date();
+  oneMonthLater.setMonth(now.getMonth() + 1);
 
   const handleDayMouseEnter = (day: Date) => {
     setHoveredDay(day);
@@ -46,7 +48,35 @@ export const Dashboard = () => {
   };
 
   const birthdaysOnHoveredDay = birthdays.filter(
-    (birthday) => birthday.date.toDateString() === hoveredDay?.toDateString(),
+    (birthday) =>
+      hoveredDay &&
+      birthday.date.getDate() === hoveredDay.getDate() &&
+      birthday.date.getMonth() === hoveredDay.getMonth(),
+  );
+
+  function getRelevantBirthdayDates(birthday: Date, now: Date): Date[] {
+    const currentYear = now.getFullYear();
+    const thisYearBirthday = new Date(
+      currentYear,
+      birthday.getMonth(),
+      birthday.getDate(),
+    );
+    const lastYearBirthday = new Date(
+      currentYear - 1,
+      birthday.getMonth(),
+      birthday.getDate(),
+    );
+    const nextYearBirthday = new Date(
+      currentYear + 1,
+      birthday.getMonth(),
+      birthday.getDate(),
+    );
+    return [lastYearBirthday, thisYearBirthday, nextYearBirthday];
+  }
+
+  // Get all relevant dates for all birthdays to display in calendar
+  const allBirthdayCalendarDates = birthdays.flatMap((birthday) =>
+    getRelevantBirthdayDates(birthday.date, now),
   );
 
   return (
@@ -56,9 +86,11 @@ export const Dashboard = () => {
         <div className="relative h-[330px]">
           <Calendar
             mode="multiple"
-            selected={date}
+            selected={allBirthdayCalendarDates}
             onDayMouseEnter={handleDayMouseEnter}
             onDayMouseLeave={handleDayMouseLeave}
+            fromYear={now.getFullYear() - 1}
+            toYear={now.getFullYear() + 1}
             className="rounded-md border"
           />
           {hoveredDay && birthdaysOnHoveredDay.length > 0 && (
@@ -76,13 +108,19 @@ export const Dashboard = () => {
           <h2>Upcoming Birthdays</h2>
           <ul>
             {birthdays
-              .filter((birthday) => birthday.date > new Date())
+              .filter(
+                (birthday) =>
+                  birthday.date > now && birthday.date <= oneMonthLater,
+              )
               .map((birthday, index) => (
                 <li key={index} className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
                     {birthday.date.toLocaleDateString()}
                   </span>
                   <span className="font-medium">{birthday.name}</span>
+                  <span className="font-medium">
+                    Age: {birthday.date.getFullYear() - now.getFullYear()}
+                  </span>
                 </li>
               ))}
           </ul>
@@ -91,7 +129,7 @@ export const Dashboard = () => {
           <h2>Previous Birthdays</h2>
           <ul>
             {birthdays
-              .filter((birthday) => birthday.date < new Date())
+              .filter((birthday) => birthday.date < now)
               .map((birthday, index) => (
                 <li key={index} className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
