@@ -3,6 +3,86 @@ import { useState } from "react";
 
 const birthdays = [
   {
+    name: "Alice",
+    date: new Date("1999-03-15"),
+  },
+  {
+    name: "Bob",
+    date: new Date("1998-07-21"),
+  },
+  {
+    name: "Charlie",
+    date: new Date("1997-12-05"),
+  },
+  {
+    name: "Diana",
+    date: new Date("1996-01-30"),
+  },
+  {
+    name: "Edward",
+    date: new Date("1995-06-14"),
+  },
+  {
+    name: "Fiona",
+    date: new Date("1994-09-09"),
+  },
+  {
+    name: "George",
+    date: new Date("1993-11-23"),
+  },
+  {
+    name: "Hannah",
+    date: new Date("1992-04-18"),
+  },
+  {
+    name: "Ian",
+    date: new Date("1991-08-12"),
+  },
+  {
+    name: "Julia",
+    date: new Date("1990-02-27"),
+  },
+  {
+    name: "Kevin",
+    date: new Date("1989-05-16"),
+  },
+  {
+    name: "Laura",
+    date: new Date("1988-10-03"),
+  },
+  {
+    name: "Michael",
+    date: new Date("1987-07-25"),
+  },
+  {
+    name: "Nina",
+    date: new Date("1986-03-11"),
+  },
+  {
+    name: "Oscar",
+    date: new Date("1985-12-19"),
+  },
+  {
+    name: "Paula",
+    date: new Date("1984-06-28"),
+  },
+  {
+    name: "Quentin",
+    date: new Date("1983-09-14"),
+  },
+  {
+    name: "Rachel",
+    date: new Date("1982-11-30"),
+  },
+  {
+    name: "Steve",
+    date: new Date("1981-01-07"),
+  },
+  {
+    name: "Tina",
+    date: new Date("1980-05-22"),
+  },
+  {
     name: "Terence",
     date: new Date("2025-02-12"),
   },
@@ -20,11 +100,11 @@ const birthdays = [
   },
   {
     name: "John Doe",
-    date: new Date("2025-05-01"),
+    date: new Date("2020-05-01"),
   },
   {
     name: "Jane Doe",
-    date: new Date("2025-05-02"),
+    date: new Date("2024-05-02"),
   },
   {
     name: "Matt",
@@ -79,9 +159,45 @@ export const Dashboard = () => {
     getRelevantBirthdayDates(birthday.date, now),
   );
 
+  const upcomingBirthdays = birthdays
+    .map((birthday) => ({
+      ...birthday,
+      virtualDate: new Date(
+        now.getFullYear(),
+        birthday.date.getMonth(),
+        birthday.date.getDate(),
+      ),
+    }))
+    .filter((birthday) => birthday.virtualDate >= now)
+    .sort((a, b) => a.virtualDate.getTime() - b.virtualDate.getTime())
+    .slice(0, 10);
+
+  const previousBirthdays = birthdays
+    .map((birthday) => ({
+      ...birthday,
+      virtualDate: new Date(
+        now.getFullYear(),
+        birthday.date.getMonth(),
+        birthday.date.getDate(),
+      ),
+    }))
+    .filter((birthday) => {
+      if (birthday.date.getFullYear() - now.getFullYear() === 0) {
+        return null;
+      } else {
+        return (
+          birthday.virtualDate < now && !upcomingBirthdays.includes(birthday)
+        );
+      }
+    })
+    .sort((a, b) => b.virtualDate.getTime() - a.virtualDate.getTime())
+    .slice(0, 10);
+
   return (
     <div className="container mx-auto flex min-h-[calc(100vh-120px)] flex-col items-center justify-center gap-8">
-      <h1>Dashboard</h1>
+      <h1 className="text-3xl">
+        Dashboard - <span className="text-yellow-500">Work in progress</span>
+      </h1>
       <div className="flex gap-12">
         <div className="relative h-[330px]">
           <Calendar
@@ -107,37 +223,33 @@ export const Dashboard = () => {
         <div className="flex flex-col gap-4">
           <h2>Upcoming Birthdays</h2>
           <ul>
-            {birthdays
-              .filter(
-                (birthday) =>
-                  birthday.date > now && birthday.date <= oneMonthLater,
-              )
-              .map((birthday, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">
-                    {birthday.date.toLocaleDateString()}
-                  </span>
-                  <span className="font-medium">{birthday.name}</span>
-                  <span className="font-medium">
-                    Age: {birthday.date.getFullYear() - now.getFullYear()}
-                  </span>
-                </li>
-              ))}
+            {upcomingBirthdays.map((birthday, index) => (
+              <li key={index} className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">
+                  {birthday.date.toLocaleDateString()}
+                </span>
+                <span className="font-medium">{birthday.name}</span>
+                <span className="font-medium text-yellow-500">
+                  {Math.abs(birthday.date.getFullYear() - now.getFullYear())}
+                </span>
+              </li>
+            ))}
           </ul>
         </div>
         <div className="flex flex-col gap-4">
           <h2>Previous Birthdays</h2>
           <ul>
-            {birthdays
-              .filter((birthday) => birthday.date < now)
-              .map((birthday, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">
-                    {birthday.date.toLocaleDateString()}
-                  </span>
-                  <span className="font-medium">{birthday.name}</span>
-                </li>
-              ))}
+            {previousBirthdays.map((birthday, index) => (
+              <li key={index} className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">
+                  {birthday.date.toLocaleDateString()}
+                </span>
+                <span className="font-medium">{birthday.name}</span>
+                <span className="font-medium text-yellow-500">
+                  {Math.abs(birthday.date.getFullYear() - now.getFullYear())}
+                </span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
